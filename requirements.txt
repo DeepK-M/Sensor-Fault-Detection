@@ -1,0 +1,4 @@
+pandas
+numpy
+
+-e.  # use to trigger the setup.py in requirement.txt 

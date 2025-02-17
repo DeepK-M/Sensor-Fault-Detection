@@ -1,4 +1,4 @@
 pandas
 numpy
-
+pymongo
 -e.  # use to trigger the setup.py in requirement.txt 

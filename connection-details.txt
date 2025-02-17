@@ -1,0 +1,1 @@
+mongo url - mongodb+srv://sensor:12345@data0.eu62c.mongodb.net/?retryWrites=true&w=majority&appName=Data0

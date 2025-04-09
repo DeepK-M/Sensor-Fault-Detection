@@ -1,0 +1,205 @@
+# Wafer Fault Detection System PowerPoint Content
+
+## Slide 1: Title Slide
+- **Title**: Wafer Fault Detection System
+- **Subtitle**: Machine Learning Sensor Project for Semiconductor Manufacturing
+- **Author**: [Your Name]
+- **Date**: [Current Date]
+
+## Slide 2: Project Overview
+- **Purpose**: Automated detection of wafer faults in semiconductor manufacturing processes
+- **Problem Statement**: Need to identify defective wafers early to reduce waste and improve yield
+- **Solution**: ML-based classification system that analyzes sensor data to detect good vs. bad wafers
+- **Technology Stack**: 
+  - **Backend**: Python, Flask
+  - **Database**: MongoDB
+  - **ML Libraries**: Scikit-learn, XGBoost
+  - **Deployment**: Docker
+
+## Slide 3: System Architecture
+- **Components**:
+  - **Data Ingestion Layer**: MongoDB to CSV conversion pipeline
+  - **Data Transformation Layer**: Preprocessing, feature engineering, and scaling
+  - **Model Training Layer**: Multiple classifier evaluation with hyperparameter tuning
+  - **Prediction Layer**: Real-time prediction pipeline for new data
+  - **Web Interface**: Flask-based UI for file upload and prediction download
+- **Design Pattern**: Modular pipeline architecture with clear separation of concerns
+
+## Slide 4: Data Flow Diagram
+- **Data Sources**: 
+  - MongoDB database with 'waferfault' collection
+  - Sensor readings from manufacturing equipment
+- **Processing Steps**:
+  1. Extract data from MongoDB using PyMongo client
+  2. Convert to pandas DataFrame and save as CSV
+  3. Apply preprocessing (imputation, scaling) via scikit-learn pipeline
+  4. Split data into train/test sets (80/20 ratio)
+  5. Train and evaluate multiple ML models
+  6. Save best model and preprocessor as pickle files
+  7. Use saved artifacts for prediction on new data
+
+## Slide 5: Data Ingestion
+- **Implementation Details**:
+  - **Connection**: PyMongo client connects to MongoDB at configured URL
+  - **Extraction**: Data pulled from 'waferfault' collection in specified database
+  - **Transformation**: MongoDB documents converted to pandas DataFrame
+  - **Cleaning**: '_id' field removed, 'na' values replaced with numpy.nan
+  - **Storage**: DataFrame saved as CSV in artifacts folder ('wafer_fault.csv')
+- **Error Handling**: Custom exception class with detailed error tracking
+
+## Slide 6: Data Transformation
+- **Preprocessing Pipeline**:
+  - **Missing Value Handling**: SimpleImputer with constant strategy (fill_value=0)
+  - **Feature Scaling**: RobustScaler for resilience against outliers
+  - **Target Transformation**: Convert -1/1 values to 0/1 for binary classification
+  - **Train/Test Split**: 80% training, 20% testing with random_state=42
+- **Output**: 
+  - Preprocessed numpy arrays for training and testing
+  - Serialized preprocessor object saved for prediction pipeline
+
+## Slide 7: Model Training
+- **Models Evaluated**:
+  - **XGBoost Classifier**: Gradient boosting optimized for performance
+  - **Gradient Boosting Classifier**: Scikit-learn implementation
+  - **Support Vector Machine (SVC)**: For complex decision boundaries
+  - **Random Forest Classifier**: Ensemble of decision trees
+- **Evaluation Process**:
+  - Train each model on training data
+  - Predict on test data
+  - Calculate accuracy score
+  - Select model with highest test accuracy
+- **Selection Criteria**: Best accuracy score on test data
+
+## Slide 8: Model Configuration
+- **Hyperparameter Grids**:
+  - **XGBoost**: 
+    - learning_rate: [0.1, 0.01, 0.001]
+    - max_depth: [3, 5, 7]
+    - n_estimators: [100, 200, 300]
+    - gamma: [0, 0.1, 0.2]
+  - **SVC**: 
+    - C: [0.1, 1, 10]
+    - kernel: [linear, rbf]
+    - gamma: [0.1, 0.01, 0.001]
+  - **Random Forest**: 
+    - n_estimators: [100, 200, 300]
+    - max_depth: [None, 5, 10]
+    - min_samples_split: [2, 5, 10]
+    - min_samples_leaf: [1, 2, 4]
+- **Tuning Method**: GridSearchCV with 5-fold cross-validation
+
+## Slide 9: Prediction Pipeline
+- **Process Flow**:
+  1. User uploads CSV file through web interface
+  2. File saved in 'prediction_artifacts' directory
+  3. Data loaded into pandas DataFrame
+  4. Preprocessor applied to transform features
+  5. Trained model used for prediction
+  6. Predictions mapped to human-readable labels (0→'bad', 1→'good')
+  7. Results saved as CSV in 'predictions' directory
+  8. Result file sent to user for download
+- **Implementation**: Class-based design with clear separation of concerns
+
+## Slide 10: Web Application
+- **Routes**:
+  - **Home** (`/`): Welcome page with application introduction
+  - **Train** (`/train`): Endpoint to trigger model training pipeline
+  - **Predict** (`/predict`): 
+    - GET: Renders upload form
+    - POST: Processes uploaded file and returns predictions
+- **UI Features**: 
+  - Clean, user-friendly interface
+  - File upload functionality
+  - Automatic file download after prediction
+- **Deployment**: Docker containerization for consistent environment
+
+## Slide 11: Project Structure
+- **Key Directories**:
+  - **src/components/**: Core ML pipeline components
+    - data_ingestion.py: MongoDB to CSV conversion
+    - data_transformation.py: Preprocessing pipeline
+    - model_trainer.py: Model training and evaluation
+  - **src/pipeline/**: End-to-end pipelines
+    - train_pipeline.py: Orchestrates the training process
+    - predict_pipeline.py: Handles prediction workflow
+  - **src/utils/**: Utility functions for file operations
+  - **config/**: Configuration files (model.yaml)
+  - **artifacts/**: Saved models and preprocessors
+  - **templates/**: HTML templates for web interface
+
+## Slide 12: Exception Handling & Logging
+- **Custom Exception Class**: 
+  - Captures error details with line number and module
+  - Provides traceback information for debugging
+  - Consistent error handling across application
+- **Logging System**:
+  - Comprehensive logging throughout the application
+  - Timestamps and log levels for easy filtering
+  - Critical operations logged for audit trail
+- **Error Management**: 
+  - Graceful error handling in web interface
+  - User-friendly error messages
+  - Detailed logs for developer troubleshooting
+
+## Slide 13: Results & Performance
+- **Model Performance Metrics**:
+  - Accuracy score of best model on test data
+  - Comparison of different algorithms:
+    - XGBoost: [Accuracy %]
+    - SVC: [Accuracy %]
+    - Random Forest: [Accuracy %]
+    - Gradient Boosting: [Accuracy %]
+- **Threshold**: Minimum accuracy requirement of 0.5 (50%)
+- **Best Model**: [Name of best performing model] with [accuracy score]
+- **Hyperparameters**: Optimal configuration after GridSearchCV
+
+## Slide 14: Demo
+- **Live Demonstration**:
+  - Starting the application (Flask server)
+  - Uploading a test wafer data file
+  - Processing and prediction
+  - Downloading and interpreting results
+- **Key Features to Highlight**:
+  - Speed of prediction
+  - Accuracy of results
+  - User-friendly interface
+
+## Slide 15: Future Enhancements
+- **Potential Improvements**:
+  - **Model Enhancements**:
+    - Deep learning models (Neural Networks)
+    - Ensemble methods combining multiple models
+    - Feature importance analysis
+  - **System Improvements**:
+    - Real-time monitoring dashboard
+    - Integration with production systems via APIs
+    - Automated retraining pipeline based on performance drift
+  - **UI Enhancements**:
+    - Interactive visualization of predictions
+    - Batch processing capabilities
+    - User authentication and result history
+
+## Slide 16: Conclusion
+- **Summary of Project**:
+  - End-to-end ML pipeline for wafer fault detection
+  - Modular, maintainable architecture
+  - Production-ready implementation with Docker
+- **Key Learnings**:
+  - Importance of preprocessing in sensor data
+  - Model selection and hyperparameter tuning impact
+  - Pipeline architecture benefits for ML projects
+- **Business Impact**:
+  - Reduced manufacturing waste
+  - Improved quality control
+  - Cost savings through early fault detection
+
+## Slide 17: Q&A
+- **Prepared Questions**:
+  - How does the system handle imbalanced data?
+  - What is the inference time for a single prediction?
+  - How frequently should the model be retrained?
+  - What additional data sources could improve the model?
+- **Contact Information**:
+  - Email: [Your Email]
+  - GitHub: [Repository Link]
+  - LinkedIn: [Your Profile]
